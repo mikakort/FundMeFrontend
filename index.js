@@ -5,6 +5,7 @@ const connectButton = document.getElementById("connectButton");
 const withdrawButton = document.getElementById("withdrawButton");
 const fundButton = document.getElementById("fundButton");
 const balanceButton = document.getElementById("balanceButton");
+const textBox = document.getElementById("textBox");
 connectButton.onclick = connect;
 withdrawButton.onclick = withdraw;
 fundButton.onclick = fund;
@@ -16,17 +17,21 @@ async function connect() {
             await ethereum.request({ method: "eth_requestAccounts" });
         } catch (error) {
             console.log(error);
+            textBox.innerHTML = error;
         }
         connectButton.innerHTML = "Connected";
+        textBox.innerHTML = "Connected To Metamask";
         const accounts = await ethereum.request({ method: "eth_accounts" });
         console.log(accounts);
     } else {
         connectButton.innerHTML = "Please install MetaMask";
+        textBox.innerHTML = "Please install MetaMask";
     }
 }
 
 async function withdraw() {
     console.log(`Withdrawing...`);
+    textBox.innerHTML = `Withdrawing...`;
     if (typeof window.ethereum !== "undefined") {
         const provider = new ethers.providers.Web3Provider(window.ethereum);
         await provider.send("eth_requestAccounts", []);
@@ -41,12 +46,14 @@ async function withdraw() {
         }
     } else {
         withdrawButton.innerHTML = "Please install MetaMask";
+        textBox.innerHTML = "Please install MetaMask";
     }
 }
 
 async function fund() {
     const ethAmount = document.getElementById("ethAmount").value;
     console.log(`Funding with ${ethAmount}...`);
+    textBox.innerHTML = `Funding with ${ethAmount}...`;
     if (typeof window.ethereum !== "undefined") {
         const provider = new ethers.providers.Web3Provider(window.ethereum);
         const signer = provider.getSigner();
@@ -58,9 +65,11 @@ async function fund() {
             await listenForTransactionMine(transactionResponse, provider);
         } catch (error) {
             console.log(error);
+            textBox.innerHTML = error;
         }
     } else {
         fundButton.innerHTML = "Please install MetaMask";
+        textBox.innerHTML = "Please install MetaMask";
     }
 }
 
@@ -70,24 +79,30 @@ async function getBalance() {
         try {
             const balance = await provider.getBalance(contractAddress);
             console.log(ethers.utils.formatEther(balance));
+            textBox.innerHTML = ethers.utils.formatEther(balance);
         } catch (error) {
             console.log(error);
+            textBox.innerHTML = error;
         }
     } else {
         balanceButton.innerHTML = "Please install MetaMask";
+        textBox.innerHTML = "Please install MetaMask";
     }
 }
 
 function listenForTransactionMine(transactionResponse, provider) {
-    console.log(`Mining ${transactionResponse.hash}`);
+    console.log(`Processing ${transactionResponse.hash}`);
+    textBox.innerHTML = `Processing ${transactionResponse.hash}`;
     return new Promise((resolve, reject) => {
         try {
             provider.once(transactionResponse.hash, (transactionReceipt) => {
                 console.log(`Completed with ${transactionReceipt.confirmations} confirmations. `);
+                textBox.innerHTML = `Completed with ${transactionReceipt.confirmations} confirmations. `;
                 resolve();
             });
         } catch (error) {
             reject(error);
+            textBox.innerHTML = error;
         }
     });
 }

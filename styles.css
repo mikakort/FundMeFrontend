@@ -29,8 +29,13 @@ body {
 }
 
 .z {
-    background-color: azure;
-    border-radius: 3px;
     padding: 5px;
     padding-top: 7px;
+}
+
+.txt {
+    background-color: #181823;
+    border-radius: 5px;
+    color: #c0eef2;
+    padding: 5px;
 }
