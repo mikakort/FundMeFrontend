@@ -51,7 +51,7 @@ async function withdraw() {
 }
 
 async function fund() {
-    const ethAmount = document.getElementById("ethAmount").value;
+    const ethAmount = document.getElementById("ethAmount").value || "0.1";
     console.log(`Funding with ${ethAmount}...`);
     textBox.innerHTML = `Funding with ${ethAmount}...`;
     if (typeof window.ethereum !== "undefined") {
